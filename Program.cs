@@ -1,3 +1,7 @@
+using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
+using trilha_net_azure_desafio.Context;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +10,20 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+// Adding settings - start
+
+//Transform enums in string
+builder.Services.AddControllers().AddJsonOptions(options =>
+              options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+//Database connection 
+builder.Services.AddDbContext<OrganizerContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
+
+//End
 
 var app = builder.Build();
 
